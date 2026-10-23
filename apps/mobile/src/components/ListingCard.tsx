@@ -9,9 +9,10 @@ import { useTheme } from './theme';
 export function ListingCard({ listing: l }: { listing: Listing }) {
   const t = useTheme();
   const sources = [l.source, ...(l.alsoOn ?? []).map((a) => a.source)];
+  // Link asChild rejects style arrays on its child, so the Pressable's style is flattened.
   return (
     <Link href={{ pathname: '/listing/[id]', params: { id: l.id } }} asChild>
-      <Pressable style={[styles.card, { backgroundColor: t.card, borderColor: t.border }]}>
+      <Pressable style={StyleSheet.flatten([styles.card, { backgroundColor: t.card, borderColor: t.border }])}>
         {l.imageUrl ? (
           <Image source={{ uri: l.imageUrl }} style={styles.img} contentFit="cover" transition={150} />
         ) : (
