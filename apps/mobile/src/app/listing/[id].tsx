@@ -6,6 +6,7 @@ import * as WebBrowser from 'expo-web-browser';
 import { useEffect } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Badge, Chip } from '@/components/Chip';
+import { ContactMessage } from '@/components/ContactMessage';
 import { useTheme } from '@/components/theme';
 import { api, type FavoriteStatus } from '@/lib/api';
 import { ago, badges, factsLine, formatEur, placeLine, priceLine, sourceName } from '@/lib/format';
@@ -110,6 +111,9 @@ export default function ListingScreen() {
             <Text style={{ color: t.accent, fontWeight: '600' }}>Auch bei {sourceName(a.source)}</Text>
           </Pressable>
         ))}
+
+        <Text style={[styles.h, { color: t.text }]}>Nachricht an den Anbieter</Text>
+        <ContactMessage listing={l} onContacted={() => fav?.status !== 'contacted' && setFav.mutate('contacted')} />
 
         <Text style={[styles.h, { color: t.text }]}>Merkliste</Text>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>

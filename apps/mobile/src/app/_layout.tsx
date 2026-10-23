@@ -14,6 +14,7 @@ export default function RootLayout() {
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="filters" options={{ presentation: 'modal', title: 'Filter' }} />
         <Stack.Screen name="listing/[id]" options={{ title: 'Wohnung' }} />
+        <Stack.Screen name="profile" options={{ presentation: 'modal', title: 'Mein Bewerberprofil' }} />
       </Stack>
     </QueryClientProvider>
   );

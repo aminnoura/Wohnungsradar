@@ -9,6 +9,7 @@
     "@wr/geo": "workspace:*",
     "@wr/shared": "workspace:*",
     "expo": "~58.0.17",
+    "expo-clipboard": "~58.0.4",
     "expo-constants": "~58.0.13",
     "expo-crypto": "~58.0.7",
     "expo-device": "~58.0.5",

@@ -6,6 +6,7 @@ One search for apartments across 23 German portals, with Berlin-specific filters
 - **Location:** all of Germany or a single city. In Berlin you can narrow to the 12 Bezirke and 96 Ortsteile, postcodes, a radius, or an area drawn on the map.
 - **Hidden ImmoScout listings:** ImmoScout24 "Suchen+" (paywalled) listings are fetched through the mobile API. The app then searches the web (Brave Search) for the same flat on Kleinanzeigen and other sites, and links any match as "Auch bei …".
 - **Dedup across portals:** listings are matched on location, size, rooms and rent.
+- **Contact message per listing:** a suggested first message to the landlord, built from your applicant profile ("Mein Bewerberprofil", stored on the device). It uses "Sie" for companies and agents and "du" for WG rooms, offers your flat for Tauschwohnungen, and mentions your WBS only when the listing requires one. With `ANTHROPIC_API_KEY` set, Claude (`claude-opus-5-5`) writes it from the listing text; otherwise a built-in template is used. Copying it can also mark the listing as "Angefragt".
 - **Saved searches** trigger push notifications (iOS/Android) and appear in an in-app inbox (all platforms).
 - **Map view** uses react-native-maps on iOS/Android and Leaflet on web.
 - **Favorites tracker:** saved → contacted → viewing → applied → rejected. Every card has quick actions (Merken, Beworben, Ausblenden) with undo. Applied, rejected and hidden flats drop out of search, the map and alerts, including when the same flat reappears on another portal.
@@ -25,7 +26,7 @@ db/             SQL migrations (Postgres 16 + PostGIS)
 ## Run it locally
 
 ```bash
-cp .env.example .env          # add BRAVE_API_KEY to enable the 8 web-discovery sources
+cp .env.example .env          # optional: BRAVE_API_KEY (8 web-discovery sources), ANTHROPIC_API_KEY (Claude-written messages)
 pnpm install
 pnpm db:up                    # Postgres + PostGIS in Docker
 pnpm db:migrate

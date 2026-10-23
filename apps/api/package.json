@@ -9,6 +9,7 @@
     "typecheck": "tsc -p ."
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^1.1.0",
     "@fastify/cors": "^10.0.1",
     "@wr/db": "workspace:*",
     "@wr/geo": "workspace:*",
@@ -16,5 +17,9 @@
     "fastify": "^5.2.0",
     "zod": "^3.23.8"
   },
-  "devDependencies": { "@types/node": "^20.17.10", "tsx": "^4.19.2", "typescript": "~5.6.3" }
+  "devDependencies": {
+    "@types/node": "^20.17.10",
+    "tsx": "^4.19.2",
+    "typescript": "~5.6.3"
+  }
 }

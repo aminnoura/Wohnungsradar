@@ -1,9 +1,10 @@
 import cors from '@fastify/cors';
 import { listingSelect, rowToListing, searchListings, sql } from '@wr/db';
 import { BERLIN_BEZIRKE, CITIES } from '@wr/geo';
-import { FAVORITE_STATUSES, FILTER_DEFS, HEATING_TYPES, SearchFiltersSchema, SOURCES } from '@wr/shared';
+import { FAVORITE_STATUSES, FILTER_DEFS, HEATING_TYPES, SearchFiltersSchema, SOURCES, TenantProfileSchema, type Listing } from '@wr/shared';
 import Fastify, { type FastifyRequest } from 'fastify';
 import { z } from 'zod';
+import { generateMessage } from './message';
 
 const app = Fastify({ logger: { level: process.env.LOG_LEVEL ?? 'info' } });
 void app.register(cors, { origin: true });
@@ -59,6 +60,19 @@ app.get<{ Params: { id: string } }>('/listings/:id', async (req, reply) => {
     FROM listings l WHERE l.id = ${id}`;
   if (!row) return reply.code(404).send({ error: 'not found' });
   return rowToListing(row);
+});
+
+/** Suggested contact message for a listing, written for the applicant profile sent along (not stored). */
+app.post<{ Params: { id: string } }>('/listings/:id/message', async (req, reply) => {
+  const { id } = parse(z.object({ id: z.string().uuid() }), req.params);
+  const body = parse(
+    z.object({ profile: TenantProfileSchema, lang: z.enum(['de', 'en']).default('de'), fresh: z.boolean().default(false) }),
+    req.body,
+  );
+  const [row] = await sql`SELECT ${sql.unsafe(listingSelect('l'))}, l.search_text AS "searchText" FROM listings l WHERE l.id = ${id}`;
+  if (!row) return reply.code(404).send({ error: 'not found' });
+  const { searchText, ...rest } = row;
+  return generateMessage(rowToListing(rest) as Listing, searchText as string | null, body.profile, body.lang, body.fresh, req.log);
 });
 
 // Saved searches

@@ -9,6 +9,7 @@ import { useTheme } from '@/components/theme';
 import { api } from '@/lib/api';
 import { useFilters } from '@/lib/filters';
 import { ago } from '@/lib/format';
+import { useProfile } from '@/lib/profile';
 import { registerForPush } from '@/lib/push';
 import { useMarkListing } from '@/lib/useMarkListing';
 
@@ -32,6 +33,7 @@ export default function AlertsScreen() {
   const markRead = useMutation({ mutationFn: api.readNotifications, onSuccess: () => qc.invalidateQueries({ queryKey: ['notifications'] }) });
   const unread = inbox.data?.filter((n) => !n.read).length ?? 0;
   const { mark, statusOf } = useMarkListing();
+  const profileName = useProfile((s) => s.profile.name);
 
   return (
     <ScrollView contentContainerStyle={{ paddingVertical: 10, maxWidth: 900, width: '100%', alignSelf: 'center' }}>
@@ -40,6 +42,14 @@ export default function AlertsScreen() {
           Push ist auf diesem Gerät nicht aktiv (Berechtigung fehlt, Simulator oder noch kein EAS-Projekt). Neue Treffer erscheinen trotzdem unten.
         </Text>
       )}
+      <Pressable onPress={() => router.push('/profile')} style={[styles.row, { backgroundColor: t.card, borderColor: t.border }]}>
+        <Ionicons name="person-circle-outline" size={22} color={t.accent} />
+        <View style={{ flex: 1 }}>
+          <Text style={{ color: t.text, fontWeight: '600' }}>Mein Bewerberprofil</Text>
+          <Text style={{ color: t.muted, fontSize: 12 }}>{profileName ? profileName : 'Für automatische Nachrichten an Vermieter'}</Text>
+        </View>
+        <Ionicons name="chevron-forward" size={18} color={t.muted} />
+      </Pressable>
       <Text style={[styles.h, { color: t.text }]}>Gespeicherte Suchen</Text>
       {(saved.data ?? []).map((s) => (
         <View key={s.id} style={[styles.row, { backgroundColor: t.card, borderColor: t.border }]}>

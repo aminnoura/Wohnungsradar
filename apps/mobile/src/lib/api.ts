@@ -1,4 +1,4 @@
-import type { FavoriteStatus, FilterDef, Listing, SearchFilters, SourceInfo } from '@wr/shared';
+import type { FavoriteStatus, FilterDef, Listing, MessageLang, SearchFilters, SourceInfo, TenantProfile } from '@wr/shared';
 import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 import { getDeviceId } from './device';
@@ -58,6 +58,8 @@ export const api = {
   search: (filters: SearchFilters, opts: { limit?: number; offset?: number; bbox?: [number, number, number, number] } = {}) =>
     request<{ total: number; items: Listing[] }>('/search', { body: { filters, ...opts } }),
   listing: (id: string) => request<Listing>(`/listings/${id}`),
+  message: (id: string, profile: TenantProfile, lang: MessageLang, fresh = false) =>
+    request<{ text: string; source: 'claude' | 'template' }>(`/listings/${id}/message`, { body: { profile, lang, fresh } }),
 
   savedSearches: () => request<SavedSearch[]>('/saved-searches'),
   saveSearch: (name: string, filters: SearchFilters) => request<SavedSearch>('/saved-searches', { body: { name, filters, notify: true } }),
