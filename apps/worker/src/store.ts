@@ -97,7 +97,7 @@ export async function expireStale() {
   await sql`
     UPDATE listings SET active = false
     WHERE active AND (
-      (source NOT IN ('web', 'immowelt', 'meinestadt', 'vonovia', 'deutschewohnen', 'heimstaden', 'covivio', 'berlinovo', 'tauschwohnung')
+      (source NOT IN ('web', 'immowelt', 'meinestadt', 'vonovia', 'deutschewohnen', 'heimstaden', 'covivio', 'berlinovo', 'tauschwohnung', 'buwog')
         AND last_seen_at < now() - interval '3 days')
       OR last_seen_at < now() - interval '21 days'
     )`;

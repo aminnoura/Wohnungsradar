@@ -1,4 +1,4 @@
-export type SourceKind = 'portal' | 'public-housing' | 'landlord' | 'swap' | 'furnished' | 'discovery';
+export type SourceKind = 'portal' | 'public-housing' | 'cooperative' | 'landlord' | 'swap' | 'furnished' | 'discovery';
 /** direct = we fetch the site's own list page/JSON; brave = found via Brave Search `site:` queries. */
 export type SourceMethod = 'direct' | 'brave';
 
@@ -29,6 +29,14 @@ export const SOURCES: SourceInfo[] = [
   { id: 'stadtundland', name: 'Stadt und Land', homepage: 'https://www.stadtundland.de', kind: 'public-housing', method: 'direct', coverage: 'berlin' },
   { id: 'berlinovo', name: 'Berlinovo', homepage: 'https://www.berlinovo.de', kind: 'public-housing', method: 'brave', coverage: 'berlin' },
 
+  { id: 'charlotte1907', name: 'Charlottenburger Baugenossenschaft', homepage: 'https://charlotte1907.de', kind: 'cooperative', method: 'direct', coverage: 'berlin' },
+
+  { id: 'grandcity', name: 'Grand City Property', homepage: 'https://www.grandcityproperty.de', kind: 'landlord', method: 'direct', coverage: 'de' },
+  { id: 'buwog', name: 'BUWOG', homepage: 'https://www.buwog.de', kind: 'landlord', method: 'brave', coverage: 'de' },
+  { id: 'gagkoeln', name: 'GAG Köln', homepage: 'https://www.gag-koeln.de', kind: 'public-housing', method: 'direct', coverage: 'de' },
+  { id: 'swd', name: 'SWD Düsseldorf', homepage: 'https://www.swd-duesseldorf.de', kind: 'public-housing', method: 'direct', coverage: 'de' },
+  { id: 'vbw', name: 'VBW Bochum', homepage: 'https://www.vbw-bochum.de', kind: 'public-housing', method: 'direct', coverage: 'de' },
+  { id: 'wbgnuernberg', name: 'wbg Nürnberg', homepage: 'https://wbg.nuernberg.de', kind: 'public-housing', method: 'direct', coverage: 'de' },
   { id: 'adler', name: 'Adler Group', homepage: 'https://www.adler-group.com', kind: 'landlord', method: 'direct', coverage: 'de' },
   { id: 'vonovia', name: 'Vonovia', homepage: 'https://www.vonovia.de', kind: 'landlord', method: 'brave', coverage: 'de' },
   { id: 'deutschewohnen', name: 'Deutsche Wohnen', homepage: 'https://www.deutsche-wohnen.com', kind: 'landlord', method: 'brave', coverage: 'de' },

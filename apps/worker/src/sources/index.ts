@@ -1,8 +1,9 @@
 import { SOURCES } from '@wr/shared';
 import { degewo, gesobau, gewobag, howoge, inberlinwohnen, stadtundland, wbm } from './berlinHousing';
-import { berlinovo, covivio, deutschewohnen, heimstaden, immowelt, meinestadt, tauschwohnung, vonovia, web } from './discovery';
+import { berlinovo, buwog, covivio, deutschewohnen, heimstaden, immowelt, meinestadt, tauschwohnung, vonovia, web } from './discovery';
 import { immoscout24 } from './immoscout24';
 import { kleinanzeigen } from './kleinanzeigen';
+import { charlotte1907, gagkoeln, grandcity, swd, vbw, wbgnuernberg } from './landlords';
 import { adler, housinganywhere, ohnemakler, wunderflats } from './portals';
 import type { SourceAdapter } from './types';
 import { wggesucht } from './wggesucht';
@@ -10,6 +11,8 @@ import { wggesucht } from './wggesucht';
 export const ADAPTERS: SourceAdapter[] = [
   immoscout24, kleinanzeigen, wggesucht, ohnemakler, immowelt, meinestadt,
   inberlinwohnen, degewo, gewobag, howoge, wbm, gesobau, stadtundland, berlinovo,
+  charlotte1907,
+  grandcity, buwog, gagkoeln, swd, vbw, wbgnuernberg,
   adler, vonovia, deutschewohnen, heimstaden, covivio,
   tauschwohnung, wunderflats, housinganywhere, web,
 ];

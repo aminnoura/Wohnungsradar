@@ -16,3 +16,6 @@ export interface SourceAdapter {
 
 export const berlinOnly = (city: City) => city.slug === 'berlin';
 export const anyCity = () => true;
+
+/** For sources whose list isn't per city (one page for all of Germany, or a single-city company): crawl once per cycle. */
+export const oncePerCycle = (city: City) => city.slug === (process.env.CRAWL_CITIES || 'berlin').split(',')[0].trim();

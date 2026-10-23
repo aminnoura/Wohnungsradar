@@ -23,8 +23,12 @@ const withoutNulls = <T extends object>(o: T | undefined) =>
 
 const SUFFIX = '(?:[Ss]tra(?:ß|ss)e|[Ss]tr\\.|[Ww]eg|[Aa]llee|[Pp]latz|[Dd]amm|[Rr]ing|[Uu]fer|[Cc]haussee|[Gg]asse|[Pp]romenade|[Ss]teig|[Pp]fad|[Zz]eile|[Mm]arkt|[Gg]raben|[Bb]ogen|[Kk]orso|[Hh]öfe)';
 // "Frankfurter Allee 12" (two words) or "Huronseestraße 80" / "Karl-Marx-Allee 5" (one word ending in a street suffix)
+// Leading words that belong to the street name: "Untere Dorfstr.", "Alte Jakobstraße", "Am Tierpark", "An der Wuhlheide".
+const PREFIX = '(?:(?:Untere|Obere|Alte|Neue|Große|Grosse|Kleine|Lange|Hohe|Breite|Am|An der|Auf der|Im|In der|Zum|Zur|Unter den)\\s)?';
 const STREET_RE = new RegExp(
-  `(?<![\\wäöüßÄÖÜ.-])((?:[A-ZÄÖÜ][\\wäöüß.-]+\\s(?:Straße|Strasse|Str\\.|Allee|Weg|Platz|Damm|Ring|Ufer|Chaussee|Promenade|Markt|Steig))|(?:[A-ZÄÖÜ][\\wäöüß-]*?${SUFFIX}))` +
+  `(?<![\\wäöüßÄÖÜ.-])(${PREFIX}(?:[A-ZÄÖÜ][\\wäöüß.-]+\\s(?:Straße|Strasse|Str\\.|Allee|Weg|Platz|Damm|Ring|Ufer|Chaussee|Promenade|Markt|Steig))|${PREFIX}(?:[A-ZÄÖÜ][\\wäöüß-]*?${SUFFIX})` +
+    // "Am Georgshof 9", "An der Wuhlheide 3": a leading preposition makes any name a street
+    `|(?:Am|An der|Auf der|Im|In der|Zum|Zur|Unter den)\\s[A-ZÄÖÜ][\\wäöüß-]+)` +
     `\\s+(\\d+\\s?[a-zA-Z]?(?:\\s?[-/]\\s?\\d+\\s?[a-zA-Z]?)?)(?!\\d)`,
 );
 
@@ -51,7 +55,7 @@ export function normalize(raw: RawListing, adapter: Pick<SourceAdapter, 'extract
 
   const address = raw.address ?? '';
   const plz = parsePlz(address) ?? fields.plz;
-  const city = parseCity(address || raw.title, plz, crawlCity);
+  const city = fields.city ?? parseCity(address || raw.title, plz, crawlCity);
   let area = { bezirk: null as string | null, ortsteil: null as string | null };
   if (city === 'Berlin') {
     area = detectBerlinArea(address);

@@ -33,6 +33,8 @@ export const SITE_RULES: SiteRule[] = [
   { source: 'heimstaden', host: /heimstaden\.de$/, listing: /wohnung|expose|immobilie/i },
   { source: 'covivio', host: /covivio\.immo$/, listing: /mieten\/.+|expose/i },
   { source: 'berlinovo', host: /berlinovo\.de$/, listing: /\/(?:wohnung|apartment|housing)\/.+\d/ },
+  { source: 'buwog', host: /buwog\.de$/, listing: /immobilie|expose|wohnung/i },
+  { source: 'grandcity', host: /grandcityproperty\.de$/, listing: /\/wohnungssuche\/[^/]+\/[^/]+\/\d/, id: (u) => /\/(\d{4}_\d{5}_\d{3}_\d{4})/.exec(u)?.[1] ?? null },
   { source: 'tauschwohnung', host: /tauschwohnung\.com$/, listing: /\/\d{4,}|tausch-?angebot|wohnung\/.+/i, fields: { isSwap: true } },
   { source: 'wunderflats', host: /wunderflats\.com$/, listing: /furnished-apartment\//, id: (u) => /furnished-apartment\/[^/]+\/([a-f0-9]+)/.exec(u)?.[1] ?? null },
 ];
@@ -127,6 +129,7 @@ export const deutschewohnen = braveSite('deutschewohnen', 'deutsche-wohnen.com',
 export const heimstaden = braveSite('heimstaden', 'heimstaden.de', { query: (c) => `Wohnung ${c.name} mieten` });
 export const covivio = braveSite('covivio', 'covivio.immo', { query: (c) => `Wohnung mieten ${c.name}` });
 export const berlinovo = braveSite('berlinovo', 'berlinovo.de', { query: () => 'Wohnung mieten Berlin', berlinOnly: true });
+export const buwog = braveSite('buwog', 'buwog.de', { query: (c) => `Mietwohnung ${c.name}` });
 export const tauschwohnung = braveSite('tauschwohnung', 'tauschwohnung.com', { query: (c) => `Wohnungstausch ${c.name}`, fields: { isSwap: true } });
 
 export const web: SourceAdapter = {

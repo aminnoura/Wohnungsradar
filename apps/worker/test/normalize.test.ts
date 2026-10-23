@@ -11,6 +11,11 @@ describe('parseStreet', () => {
     ['Holländer Str. 38, 13407 Berlin', 'Holländer Str. 38'],
     ['Röbellweg 4/6 129,54 qm', 'Röbellweg 4/6'],
     ['12043 Berlin, Neukölln', null],
+    ['Vermietung nur mit WBS A Untere Dorfstr. 93, 50829 Köln', 'Untere Dorfstr. 93'],
+    ['Wohnung Alte Jakobstraße 12, 10969 Berlin', 'Alte Jakobstraße 12'],
+    ['Zwei-Zimmer-Wohnung mit Loggia Am Georgshof 9, 50765 Köln', 'Am Georgshof 9'],
+    ['Wohnen An der Wuhlheide 3, 12459 Berlin', 'An der Wuhlheide 3'],
+    ['2-Zimmer Wohnung in Grumme mit WBS Weserstraße 16, 44807 Bochum', 'Weserstraße 16'],
   ])('%s', (addr, street) => expect(parseStreet(addr)).toBe(street));
 });
 

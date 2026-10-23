@@ -1,6 +1,6 @@
 # Wohnungsradar
 
-One search for apartments across 23 German portals, with Berlin-specific filters (WBS, Tauschwohnung, Bezirk/Ortsteil). It runs on **iOS, Android and web** from a single Expo codebase.
+One search for apartments across 30 German portals, landlords and housing companies, with Berlin-specific filters (WBS, Tauschwohnung, Bezirk/Ortsteil). It runs on **iOS, Android and web** from a single Expo codebase.
 
 - **56 filters**, defined once in [`packages/shared/src/filters.ts`](packages/shared/src/filters.ts). That file drives the filter UI, validation and SQL.
 - **Location:** all of Germany or a single city. In Berlin you can narrow to the 12 Bezirke and 96 Ortsteile, postcodes, a radius, or an area drawn on the map.
@@ -57,11 +57,16 @@ Other useful commands:
 | ImmoScout24 | mobile app API (includes Suchen+ listings and exposé details) | DE |
 | Kleinanzeigen, WG-Gesucht, Ohne-Makler | list pages | DE (WG-Gesucht: cities with known ids) |
 | inberlinwohnen, degewo, Gewobag, HOWOGE (JSON), WBM, Gesobau, Stadt und Land (JSON) | list pages / JSON | Berlin |
+| Charlottenburger Baugenossenschaft (weekly offers, mostly members only) | list page | Berlin |
+| Grand City Property (flats only, per crawled city) | list page | DE |
+| GAG Köln, SWD Düsseldorf, VBW Bochum, wbg Nürnberg (municipal housing companies) | list pages, crawled once per cycle | their city |
 | Adler Group, Wunderflats, HousingAnywhere | list pages | DE |
-| Immowelt/Immonet, meinestadt, Vonovia, Deutsche Wohnen, Heimstaden, Covivio, Berlinovo, Tauschwohnung | Brave Search `site:` queries (sites block plain HTTP or render client-side) | DE / Berlin |
+| Immowelt/Immonet, meinestadt, Vonovia, Deutsche Wohnen, Heimstaden, Covivio, Berlinovo, BUWOG, Tauschwohnung | Brave Search `site:` queries (sites block plain HTTP or render client-side) | DE / Berlin |
 | Web | Brave Search, open web, plus the Suchen+ cross-search | DE |
 
 Each adapter is one file in [`apps/worker/src/sources`](apps/worker/src/sources). Most HTML adapters only declare a card selector. Field extraction (prices, m², rooms, WBS, Tausch, floor, features, …) is shared, in [`apps/worker/src/parse.ts`](apps/worker/src/parse.ts). Turn sources on or off with `SOURCES_ENABLED`, and add cities with `CRAWL_CITIES` (slugs in [`packages/geo/src/cities.ts`](packages/geo/src/cities.ts)).
+
+Not included: most Berlin housing cooperatives (EWG Pankow, Märkische Scholle, Solidarität, Altglienicke, Bremer Höhe, …) currently publish no vacancies and run waiting lists instead. Others load listings through widgets (Wohnungshelden, Immosolve) or advertise only on ImmoScout24/Immowelt, which are already covered (e.g. Münchner Wohnen). TAG, LEG, ABG, LWB, GWH and Dogewo render client-side and would need their JSON APIs.
 
 Crawl politeness: requests are throttled per host (WG-Gesucht shows a captcha after a few fast requests), and failing jobs back off exponentially. Brave usage is capped by `BRAVE_MONTHLY_BUDGET`. Geocoding uses Nominatim at 1 req/s, results are cached, and each cycle has a cap.
 

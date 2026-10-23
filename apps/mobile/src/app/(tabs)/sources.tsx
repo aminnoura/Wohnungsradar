@@ -6,7 +6,7 @@ import { useTheme } from '@/components/theme';
 import { api } from '@/lib/api';
 import { ago } from '@/lib/format';
 
-const KIND_LABEL = { portal: 'Portal', 'public-housing': 'Landeseigene WBG', landlord: 'Vermieter', swap: 'Tausch', furnished: 'Möbliert auf Zeit', discovery: 'Websuche' };
+const KIND_LABEL = { portal: 'Portal', 'public-housing': 'Kommunale WBG', cooperative: 'Genossenschaft', landlord: 'Vermieter', swap: 'Tausch', furnished: 'Möbliert auf Zeit', discovery: 'Websuche' };
 
 /** Every portal we aggregate, with crawl health. */
 export default function SourcesScreen() {

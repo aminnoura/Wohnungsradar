@@ -1,6 +1,6 @@
 import { fetchText } from '../http';
 import { parseCards } from './cards';
-import { anyCity, type SourceAdapter } from './types';
+import { anyCity, oncePerCycle, type SourceAdapter } from './types';
 
 export function parseOhneMakler(html: string) {
   return parseCards(html, {
@@ -52,7 +52,7 @@ export const adler: SourceAdapter = {
   intervalMin: 30,
   extract: { priceIs: 'warm' },
   // The Adler search page lists all German units; the normalizer assigns each one's city from its address.
-  supports: berlinOnlyOrFirst,
+  supports: oncePerCycle,
   async crawl() {
     const html = await fetchText('https://www.adler-group.com/suche/wohnung');
     return parseCards(html, {
@@ -69,12 +69,6 @@ export const adler: SourceAdapter = {
     }));
   },
 };
-
-// Sources whose single list page already covers all of Germany are crawled once (on the first configured city).
-function berlinOnlyOrFirst(city: { slug: string }) {
-  const first = (process.env.CRAWL_CITIES || 'berlin').split(',')[0].trim();
-  return city.slug === first;
-}
 
 export const housinganywhere: SourceAdapter = {
   id: 'housinganywhere',
