@@ -4,9 +4,11 @@ import { countActiveFilters } from '@wr/shared';
 import { router, Stack } from 'expo-router';
 import { ActivityIndicator, Alert, FlatList, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { ListingCard } from '@/components/ListingCard';
+import { UndoBar } from '@/components/UndoBar';
 import { useTheme } from '@/components/theme';
 import { api } from '@/lib/api';
 import { useFilters } from '@/lib/filters';
+import { useMarkListing } from '@/lib/useMarkListing';
 
 const PAGE = 30;
 
@@ -24,6 +26,7 @@ export default function SearchScreen() {
   const items = q.data?.pages.flatMap((p) => p.items) ?? [];
   const total = q.data?.pages[0]?.total ?? 0;
   const active = countActiveFilters(filters);
+  const { mark, undo, last, statusOf } = useMarkListing();
 
   const save = useMutation({
     mutationFn: (name: string) => api.saveSearch(name, filters),
@@ -70,7 +73,7 @@ export default function SearchScreen() {
         <FlatList
           data={items}
           keyExtractor={(l) => l.id}
-          renderItem={({ item }) => <ListingCard listing={item} />}
+          renderItem={({ item }) => <ListingCard listing={item} status={statusOf(item.id)} onAction={mark} />}
           onEndReached={() => q.hasNextPage && !q.isFetchingNextPage && q.fetchNextPage()}
           onEndReachedThreshold={0.5}
           refreshing={q.isRefetching && !q.isFetchingNextPage}
@@ -82,6 +85,7 @@ export default function SearchScreen() {
           ListFooterComponent={q.isFetchingNextPage ? <ActivityIndicator style={{ margin: 16 }} /> : undefined}
         />
       )}
+      <UndoBar last={last} onUndo={undo} />
     </View>
   );
 }

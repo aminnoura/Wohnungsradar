@@ -2,13 +2,13 @@
 
 One search for apartments across 23 German portals, with Berlin-specific filters (WBS, Tauschwohnung, Bezirk/Ortsteil). It runs on **iOS, Android and web** from a single Expo codebase.
 
-- **55 filters**, defined once in [`packages/shared/src/filters.ts`](packages/shared/src/filters.ts). That file drives the filter UI, validation and SQL.
+- **56 filters**, defined once in [`packages/shared/src/filters.ts`](packages/shared/src/filters.ts). That file drives the filter UI, validation and SQL.
 - **Location:** all of Germany or a single city. In Berlin you can narrow to the 12 Bezirke and 96 Ortsteile, postcodes, a radius, or an area drawn on the map.
 - **Hidden ImmoScout listings:** ImmoScout24 "Suchen+" (paywalled) listings are fetched through the mobile API. The app then searches the web (Brave Search) for the same flat on Kleinanzeigen and other sites, and links any match as "Auch bei …".
 - **Dedup across portals:** listings are matched on location, size, rooms and rent.
 - **Saved searches** trigger push notifications (iOS/Android) and appear in an in-app inbox (all platforms).
 - **Map view** uses react-native-maps on iOS/Android and Leaflet on web.
-- **Favorites tracker:** saved → contacted → viewing → applied → rejected.
+- **Favorites tracker:** saved → contacted → viewing → applied → rejected. Every card has quick actions (Merken, Beworben, Ausblenden) with undo. Applied, rejected and hidden flats drop out of search, the map and alerts, including when the same flat reappears on another portal.
 
 ## Layout
 

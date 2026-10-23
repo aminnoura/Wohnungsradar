@@ -10,6 +10,7 @@ import { api } from '@/lib/api';
 import { useFilters } from '@/lib/filters';
 import { ago } from '@/lib/format';
 import { registerForPush } from '@/lib/push';
+import { useMarkListing } from '@/lib/useMarkListing';
 
 export default function AlertsScreen() {
   const t = useTheme();
@@ -30,6 +31,7 @@ export default function AlertsScreen() {
   const remove = useMutation({ mutationFn: api.deleteSearch, onSuccess: () => qc.invalidateQueries({ queryKey: ['saved'] }) });
   const markRead = useMutation({ mutationFn: api.readNotifications, onSuccess: () => qc.invalidateQueries({ queryKey: ['notifications'] }) });
   const unread = inbox.data?.filter((n) => !n.read).length ?? 0;
+  const { mark, statusOf } = useMarkListing();
 
   return (
     <ScrollView contentContainerStyle={{ paddingVertical: 10, maxWidth: 900, width: '100%', alignSelf: 'center' }}>
@@ -65,10 +67,10 @@ export default function AlertsScreen() {
           </Pressable>
         )}
       </View>
-      {(inbox.data ?? []).map((n) => (
+      {(inbox.data ?? []).filter((n) => statusOf(n.listing.id) !== 'hidden').map((n) => (
         <View key={n.id} style={{ opacity: n.read ? 0.65 : 1 }}>
           <Text style={{ color: t.muted, fontSize: 11, marginLeft: 16 }}>{n.searchName} · {ago(n.createdAt)}</Text>
-          <ListingCard listing={n.listing} />
+          <ListingCard listing={n.listing} status={statusOf(n.listing.id)} onAction={mark} />
         </View>
       ))}
     </ScrollView>

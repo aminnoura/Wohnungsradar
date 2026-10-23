@@ -117,6 +117,7 @@ export const FILTER_DEFS: FilterDef[] = [
   { key: 'keywords', group: 'meta', label: 'Stichwörter', kind: 'custom', input: 'text' },
   { key: 'excludeKeywords', group: 'meta', label: 'Ausschließen', kind: 'custom', input: 'text' },
   { key: 'hideSeen', group: 'meta', label: 'Gesehene ausblenden', kind: 'custom', input: 'bool' },
+  { key: 'showHandled', group: 'meta', label: 'Beworbene & ausgeblendete anzeigen', kind: 'custom', input: 'bool' },
   { key: 'strict', group: 'meta', label: 'Unbekannte Werte ausblenden', kind: 'custom', input: 'bool' },
   {
     key: 'sort', group: 'meta', label: 'Sortierung', kind: 'select',
@@ -197,6 +198,7 @@ export const SearchFiltersSchema = z
     keywords: z.string().max(200).optional(),
     excludeKeywords: z.string().max(200).optional(),
     hideSeen: z.boolean().optional(),
+    showHandled: z.boolean().optional(),
     strict: z.boolean().optional(),
     sort: z.enum(['newest', 'priceAsc', 'priceDesc', 'sizeDesc', 'pricePerM2']).optional(),
   })
@@ -204,6 +206,11 @@ export const SearchFiltersSchema = z
 
 export type SearchFilters = z.infer<typeof SearchFiltersSchema>;
 export type TriState = 'any' | 'only' | 'exclude';
+
+/** Merkliste statuses. HANDLED ones are dropped from search, map and alerts unless `showHandled` is set. */
+export const FAVORITE_STATUSES = ['saved', 'contacted', 'viewing', 'applied', 'rejected', 'hidden'] as const;
+export type FavoriteStatus = (typeof FAVORITE_STATUSES)[number];
+export const HANDLED_STATUSES: FavoriteStatus[] = ['applied', 'rejected', 'hidden'];
 
 export const HEATING_TYPES = ['Fernwärme', 'Gas', 'Zentralheizung', 'Etagenheizung', 'Fußbodenheizung', 'Wärmepumpe', 'Öl', 'Ofenheizung', 'Elektro'];
 export const ENERGY_CLASSES = ['A+', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];

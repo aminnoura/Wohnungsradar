@@ -1,7 +1,7 @@
 import cors from '@fastify/cors';
 import { listingSelect, rowToListing, searchListings, sql } from '@wr/db';
 import { BERLIN_BEZIRKE, CITIES } from '@wr/geo';
-import { FILTER_DEFS, HEATING_TYPES, SearchFiltersSchema, SOURCES } from '@wr/shared';
+import { FAVORITE_STATUSES, FILTER_DEFS, HEATING_TYPES, SearchFiltersSchema, SOURCES } from '@wr/shared';
 import Fastify, { type FastifyRequest } from 'fastify';
 import { z } from 'zod';
 
@@ -95,8 +95,7 @@ app.delete<{ Params: { id: string } }>('/saved-searches/:id', async (req) => {
   return { ok: true };
 });
 
-// Favorites / application tracker
-const STATUSES = ['saved', 'contacted', 'viewing', 'applied', 'rejected'] as const;
+// Favorites / application tracker (status 'hidden' = never show again)
 
 app.get('/favorites', async (req) => {
   const rows = await sql`
@@ -107,7 +106,7 @@ app.get('/favorites', async (req) => {
 });
 
 app.put<{ Params: { listingId: string } }>('/favorites/:listingId', async (req) => {
-  const body = parse(z.object({ status: z.enum(STATUSES).default('saved'), note: z.string().max(2000).nullable().optional() }), req.body ?? {});
+  const body = parse(z.object({ status: z.enum(FAVORITE_STATUSES).default('saved'), note: z.string().max(2000).nullable().optional() }), req.body ?? {});
   await sql`
     INSERT INTO favorites (device_id, listing_id, status, note)
     VALUES (${deviceId(req)}, ${req.params.listingId}, ${body.status}, ${body.note ?? null})

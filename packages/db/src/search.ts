@@ -1,4 +1,4 @@
-import { ENERGY_CLASSES, FILTER_DEFS, type SearchFilters, type TriState } from '@wr/shared';
+import { ENERGY_CLASSES, FILTER_DEFS, HANDLED_STATUSES, type SearchFilters, type TriState } from '@wr/shared';
 import type { PendingQuery, Row } from 'postgres';
 import { sql } from './client';
 import { listingSelect, toSnake } from './columns';
@@ -101,6 +101,9 @@ export function whereFor(f: SearchFilters, opts: SearchOptions = {}): Frag {
   for (const kw of splitKeywords(f.keywords)) c.push(sql`(l.title || ' ' || COALESCE(l.search_text, '')) ILIKE ${'%' + kw + '%'}`);
   for (const kw of splitKeywords(f.excludeKeywords)) c.push(sql`(l.title || ' ' || COALESCE(l.search_text, '')) NOT ILIKE ${'%' + kw + '%'}`);
   if (f.hideSeen && opts.deviceId) c.push(sql`NOT EXISTS (SELECT 1 FROM seen s WHERE s.device_id = ${opts.deviceId} AND s.listing_id = l.id)`);
+  if (!f.showHandled && opts.deviceId) {
+    c.push(sql`NOT EXISTS (SELECT 1 FROM favorites fv WHERE fv.device_id = ${opts.deviceId} AND fv.listing_id = l.id AND fv.status = ANY(${HANDLED_STATUSES}))`);
+  }
 
   if (opts.ids) c.push(sql`l.id = ANY(${opts.ids}::uuid[])`);
   if (opts.bbox) {

@@ -1,4 +1,4 @@
-import type { FilterDef, Listing, SearchFilters, SourceInfo } from '@wr/shared';
+import type { FavoriteStatus, FilterDef, Listing, SearchFilters, SourceInfo } from '@wr/shared';
 import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 import { getDeviceId } from './device';
@@ -27,7 +27,7 @@ async function request<T>(path: string, init: { method?: string; body?: unknown 
   return res.json() as Promise<T>;
 }
 
-export type FavoriteStatus = 'saved' | 'contacted' | 'viewing' | 'applied' | 'rejected';
+export type { FavoriteStatus };
 
 export interface Meta {
   sources: (SourceInfo & { active: number })[];

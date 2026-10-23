@@ -53,6 +53,7 @@ const STATUSES: { value: FavoriteStatus; label: string }[] = [
   { value: 'viewing', label: 'Besichtigung' },
   { value: 'applied', label: 'Beworben' },
   { value: 'rejected', label: 'Abgesagt' },
+  { value: 'hidden', label: 'Ausblenden' },
 ];
 
 export default function ListingScreen() {
@@ -64,7 +65,10 @@ export default function ListingScreen() {
   const fav = favs.data?.find((f) => f.listing.id === id);
   const setFav = useMutation({
     mutationFn: (s: FavoriteStatus | null) => (s ? api.setFavorite(id, s) : api.removeFavorite(id)),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['favorites'] }),
+    onSuccess: () => {
+      // Applied/rejected/hidden listings drop out of search and map, so refresh those too.
+      for (const key of ['favorites', 'search', 'map']) qc.invalidateQueries({ queryKey: [key] });
+    },
   });
 
   useEffect(() => {

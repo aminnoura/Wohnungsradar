@@ -104,7 +104,7 @@ CREATE INDEX IF NOT EXISTS saved_searches_device_idx ON saved_searches (device_i
 CREATE TABLE IF NOT EXISTS favorites (
   device_id        text NOT NULL,
   listing_id       uuid NOT NULL REFERENCES listings(id) ON DELETE CASCADE,
-  status           text NOT NULL DEFAULT 'saved', -- saved | contacted | viewing | applied | rejected
+  status           text NOT NULL DEFAULT 'saved', -- saved | contacted | viewing | applied | rejected | hidden
   note             text,
   updated_at       timestamptz NOT NULL DEFAULT now(),
   PRIMARY KEY (device_id, listing_id)
