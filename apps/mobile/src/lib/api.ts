@@ -3,12 +3,16 @@ import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 import { getDeviceId } from './device';
 
-/** EXPO_PUBLIC_API_URL wins; in development we reach the API on the machine running Metro. */
+/**
+ * EXPO_PUBLIC_API_URL wins. Otherwise the API is assumed on port 4000 of the machine serving the app:
+ * on web that's the page's own host (so http://192.168.x.x:8081 works from any device on the LAN),
+ * on native it's the machine running Metro.
+ */
 function apiBase(): string {
   if (process.env.EXPO_PUBLIC_API_URL) return process.env.EXPO_PUBLIC_API_URL;
+  if (Platform.OS === 'web' && typeof window !== 'undefined') return `${window.location.protocol}//${window.location.hostname}:4000`;
   const host = Constants.expoConfig?.hostUri?.split(':')[0];
-  if (Platform.OS !== 'web' && host) return `http://${host}:4000`;
-  return 'http://localhost:4000';
+  return host ? `http://${host}:4000` : 'http://localhost:4000';
 }
 
 export const API_BASE = apiBase();
