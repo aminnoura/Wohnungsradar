@@ -4,7 +4,7 @@ import { runCrossSearch, runJob } from './crawl';
 import { resetGeocodeBudget } from './geocode';
 import { enabledAdapters } from './sources';
 import type { SourceAdapter } from './sources/types';
-import { expireStale } from './store';
+import { backfillGeocodes, expireStale } from './store';
 
 const TICK_MS = 30_000;
 const MAX_PARALLEL = 4;
@@ -49,6 +49,7 @@ async function tick() {
     lastCrossSearch = now;
     await runCrossSearch().catch((e) => console.warn('[cross-search]', e.message));
   }
+  await backfillGeocodes(10).catch((e) => console.warn('[geocode]', e.message));
   await runAlerts().catch((e) => console.warn('[alerts]', e.message));
   if (now - lastMaintenance > 60 * 60_000) {
     lastMaintenance = now;

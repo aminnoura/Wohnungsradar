@@ -47,6 +47,7 @@ Other useful commands:
 - `pnpm typecheck` typechecks all packages.
 - `pnpm worker:once --dry --source=<id>` crawls without touching the database and prints parsed rows.
 - `pnpm worker:once --cross-search=5` searches the web for 5 recent Suchen+ listings.
+- `pnpm worker:once --geocode=50` geocodes listings that don't have coordinates yet. The running worker also does this in small batches.
 
 ## Sources
 

@@ -102,3 +102,27 @@ export async function expireStale() {
       OR last_seen_at < now() - interval '21 days'
     )`;
 }
+
+/**
+ * Geocode listings that missed the per-cycle geocoding cap at insert time (or arrived without
+ * coordinates), a few per cycle so Nominatim stays within its 1 req/s policy.
+ */
+export async function backfillGeocodes(limit = 30) {
+  const rows = await sql<{ id: string; street: string; plz: string | null; city: string | null; bezirk: string | null; ortsteil: string | null }[]>`
+    SELECT id, street, plz, city, bezirk, ortsteil FROM listings
+    WHERE active AND lat IS NULL AND street IS NOT NULL AND (plz IS NOT NULL OR city IS NOT NULL)
+    ORDER BY first_seen_at DESC LIMIT ${limit}`;
+  for (const r of rows) {
+    const hit = await geocode(`${r.street}, ${r.plz ?? ''} ${r.city ?? ''}`);
+    await sql`
+      UPDATE listings SET
+        lat = ${hit?.lat ?? null}, lng = ${hit?.lng ?? null},
+        plz = COALESCE(plz, ${hit?.plz ?? null}),
+        bezirk = COALESCE(bezirk, ${hit?.bezirk ?? null}),
+        ortsteil = COALESCE(ortsteil, ${hit?.ortsteil ?? null}),
+        -- a miss is cached as null; stop retrying this row
+        street = CASE WHEN ${hit == null} THEN NULL ELSE street END
+      WHERE id = ${r.id}`;
+  }
+  return rows.length;
+}

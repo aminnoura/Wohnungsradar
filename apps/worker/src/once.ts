@@ -1,9 +1,12 @@
 // Run sources once and print what was stored:  pnpm worker:once --source=howoge --city=berlin [--dry]
+// Other modes: --geocode=50 (backfill coordinates), --cross-search=5 (Suchen+ web search)
 import { sql } from '@wr/db';
 import { CITY_BY_SLUG } from '@wr/geo';
 import { runAlerts } from './alerts';
 import { runCrossSearch, runJob } from './crawl';
 import { normalize } from './normalize';
+import { resetGeocodeBudget } from './geocode';
+import { backfillGeocodes } from './store';
 import { ADAPTERS } from './sources';
 
 const args: Record<string, string> = Object.fromEntries(
@@ -13,6 +16,11 @@ const city = CITY_BY_SLUG[args.city ?? 'berlin'];
 const wanted = args.source ? String(args.source).split(',') : ADAPTERS.map((a) => a.id);
 
 async function main() {
+  if (args.geocode) {
+    resetGeocodeBudget();
+    console.log(`[geocode] backfilled ${await backfillGeocodes(Number(args.geocode) || 50)} listings`);
+    return;
+  }
   if (args['cross-search']) {
     await runCrossSearch(Number(args['cross-search']) || 3);
     return;
