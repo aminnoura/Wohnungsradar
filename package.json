@@ -1,0 +1,15 @@
+{
+  "name": "wohnungsradar",
+  "private": true,
+  "packageManager": "pnpm@8.15.3",
+  "scripts": {
+    "db:up": "docker compose up -d db",
+    "db:migrate": "pnpm --filter @wr/api migrate",
+    "api": "pnpm --filter @wr/api dev",
+    "worker": "pnpm --filter @wr/worker dev",
+    "worker:once": "pnpm --filter @wr/worker once",
+    "app": "pnpm --filter @wr/mobile start",
+    "test": "pnpm -r --if-present test",
+    "typecheck": "pnpm -r --if-present typecheck"
+  }
+}
